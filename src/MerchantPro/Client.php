@@ -16,6 +16,8 @@ class Client {
 	private $useragent	= 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0';
 
 	private $headers	= [];	// custom headers
+	
+	private $response_info	= [];	// holds response info
 
 	public function __construct(?string $useragent = null)
 		{
@@ -94,6 +96,7 @@ class Client {
 
 		if (!curl_error($this->curl) && $response)
 			{
+			$this->response_info = curl_getinfo($this->curl);
 			$this->close();
 			return $response;
 			}
@@ -158,6 +161,7 @@ class Client {
 
 		if (!curl_error($this->curl) && $response)
 			{
+			$this->response_info = curl_getinfo($this->curl);
 			$this->close();
 			return $response;
 			}
@@ -195,11 +199,13 @@ class Client {
 
 		if(empty($response)||is_null($response))
 			{
+			$this->response_info = curl_getinfo($this->curl);
 			$this->close();
 			}
 
 		if (!curl_error($this->curl) && $response)
 			{
+			$this->response_info = curl_getinfo($this->curl);
 			$this->close();
 			return $response;
 			}
@@ -286,6 +292,42 @@ class Client {
 		$this->verify_host = $host;
 		$this->verify_peer = $peer;
 		return $this;
+		}
+	
+	
+	public function response_info()
+		{
+		return $this->response_info;
+		/* will return an array with the following keys:
+			"url"
+			"content_type"
+			"http_code"
+			"header_size"
+			"request_size"
+			"filetime"
+			"ssl_verify_result"
+			"redirect_count"
+			"total_time"
+			"namelookup_time"
+			"connect_time"
+			"pretransfer_time"
+			"size_upload"
+			"size_download"
+			"speed_download"
+			"speed_upload"
+			"download_content_length"
+			"upload_content_length"
+			"starttransfer_time"
+			"redirect_time"
+			"certinfo"
+			"primary_ip"
+			"primary_port"
+			"local_ip"
+			"local_port"
+			"redirect_url"
+			"request_header" (This is only set if the CURLINFO_HEADER_OUT is set by a previous call to curl_setopt())
+		*/
+
 		}
 
 	public function __destruct()
