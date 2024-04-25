@@ -86,6 +86,20 @@ class MerchantPro
 	* @param string $url API gateway
 	* @param ?array $data array with data to send
 	*/
+	public function patch($url, $data = [])
+		{
+		$this->init_client();
+		
+		$responseString = $this->client->set_patch_request(true)->post_json($this->storeUrl . $url, $data);
+		
+		return $responseString;
+		}
+	
+	
+	/**
+	* @param string $url API gateway
+	* @param ?array $data array with data to send
+	*/
 	public function put($url, $data = [])
 		{
 		$this->init_client();

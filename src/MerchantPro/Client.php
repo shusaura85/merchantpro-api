@@ -7,6 +7,7 @@ class Client {
 	private $error		= '';
 	private $error_no	= 0;
 
+	private $is_patch	= false;
 	private $is_put		= false;
 	private $is_delete	= false;
 	
@@ -83,7 +84,11 @@ class Client {
 		curl_setopt($this->curl, CURLOPT_URL, $url);
 		//curl_setopt($this->curl, CURLOPT_HEADER, 0);
 		curl_setopt($this->curl, CURLOPT_POST, 0);
-		if ($this->is_put)
+		if ($this->is_patch)
+			{
+			curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+			}
+		elseif ($this->is_put)
 			{
 			curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PUT");
 			}
@@ -148,7 +153,11 @@ class Client {
 
 		curl_setopt($this->curl, CURLOPT_POST, 1);
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $datastr);
-		if ($this->is_put)
+		if ($this->is_patch)
+			{
+			curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+			}
+		elseif ($this->is_put)
 			{
 			curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PUT");
 			}
@@ -184,7 +193,11 @@ class Client {
 		//curl_setopt($this->curl, CURLOPT_POST, 1);
 		$jsondata = json_encode($data);
 		curl_setopt($this->curl, CURLOPT_POSTFIELDS, $jsondata);
-		if ($this->is_put)
+		if ($this->is_patch)
+			{
+			curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PATCH");
+			}
+		elseif ($this->is_put)
 			{
 			curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, "PUT");
 			}
@@ -270,18 +283,29 @@ class Client {
 		}
 	
 	
-	/* set put request (automatically disables delete request) */
-	public function set_put_request($enabled = false)
+	/* set patch request (automatically disables put/delete request) */
+	public function set_patch_request($enabled = false)
 		{
-		$this->is_put = $enabled;
+		$this->is_patch = $enabled;
+		$this->is_put = false;
 		$this->is_delete = false;
 		return $this;
 		}
 	
-	/* set delete request (automatically disables put request) */
+	/* set put request (automatically disables patch/delete request) */
+	public function set_put_request($enabled = false)
+		{
+		$this->is_put = $enabled;
+		$this->is_patch = false;
+		$this->is_delete = false;
+		return $this;
+		}
+	
+	/* set delete request (automatically disables patch/put request) */
 	public function set_delete_request($enabled = false)
 		{
 		$this->is_delete = $enabled;
+		$this->is_patch = false;
 		$this->is_put = false;
 		return $this;
 		}
