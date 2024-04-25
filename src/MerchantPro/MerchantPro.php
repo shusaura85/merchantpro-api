@@ -24,7 +24,7 @@ class MerchantPro
 	const MP_CATEGORIES = '/api/v2/categories';		// add /{id} to load specific category
 	const MP_INVENTORY  = '/api/v2/inventory';		// add /{id} to load specific category
 	const MP_ORDERS     = '/api/v2/orders';			// add /{id} to load specific category
-
+	
 	public function __construct($storeUrl, $apiKey, $apiSecret)
 		{
 		$this->storeUrl = $storeUrl;
@@ -47,7 +47,7 @@ class MerchantPro
 	private function init_client()
 		{
 		$this->client = new Client();
-		$this->client->setVerify($this->verifyHost, $this->verifyPeer);
+		$this->client->set_verify($this->verifyHost, $this->verifyPeer);
 		
 		// add authorization token
 		$this->client->headers_add('Authorization', 'Basic '.$this->token);
@@ -109,5 +109,44 @@ class MerchantPro
 		return $responseString;
 		}
 	
+	
+	
+	public function http_code()
+		{
+		$http_code = $this->client->response_info()['http_code'] ?? -1;
+
+		$data = ['code' => $http_code, 'message' => ''];
+		
+		switch ($http_code)
+			{
+			case -1:	$data['message'] = 'No requests performed yet';
+						break;
+			case 200:	$data['message'] = 'Found and returned';
+						break;
+			case 201:	$data['message'] = 'Resource created';
+						break;
+			case 204:	$data['message'] = 'Resource deleted';
+						break;
+			case 400:	$data['message'] = 'Bad Request';
+						break;
+			case 401:	$data['message'] = 'Unauthorized';
+						break;
+			case 403:	$data['message'] = 'Forbidden';
+						break;
+			case 404:	$data['message'] = 'Resource not found';
+						break;
+			case 405:	$data['message'] = 'Method not allowed';
+						break;
+			case 429:	$data['message'] = 'Too many requests';
+						break;
+			case 500:	$data['message'] = 'Internal server error';
+						break;
+			default:	$data['message'] = 'Not a MerchantPro error code';
+						break;
+			
+			}
+		
+		return $data;
+		}
 
 }
