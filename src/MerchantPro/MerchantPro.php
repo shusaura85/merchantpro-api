@@ -20,10 +20,11 @@ class MerchantPro
 	protected $verifyPeer = true;
 	
 	
+	const MP_BATCH		= '/api/v2/batch';			// used with POST request. Send up to 20 requests in one batch
 	const MP_PRODUCTS   = '/api/v2/products';		// add /{id} to load specific product
 	const MP_CATEGORIES = '/api/v2/categories';		// add /{id} to load specific category
-	const MP_INVENTORY  = '/api/v2/inventory';		// add /{id} to load specific category
-	const MP_ORDERS     = '/api/v2/orders';			// add /{id} to load specific category
+	const MP_INVENTORY  = '/api/v2/inventory';		// add /{type}/{id} to load specific item by type (ex: /id/1234 /ean/5200000000001 /sku/VTR345)
+	const MP_ORDERS     = '/api/v2/orders';			// add /{id} to load specific order
 	
 	public function __construct($storeUrl, $apiKey, $apiSecret)
 		{
